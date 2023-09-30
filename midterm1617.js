@@ -13,7 +13,11 @@ function make_uniform_configuration(state, n) {
     return map(x => make_ring(state, x), rev);
 }
 make_uniform_configuration("on", 3);
+function make_uniform_configuration2(state, n) {
+    return build_list(i => make_ring(state, n - i), n);
 
+}
+make_uniform_configuration2("on", 3);
 function make_free_configuration(first_state, n) {
     if (n === 0) {
         return null;
@@ -126,7 +130,6 @@ steps_to_free_configuration("off", make_uniform_configuration("on", 9));
 //given any => off off off.....
 
 // on on on => off off off
-
 
 
 
