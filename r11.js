@@ -192,9 +192,7 @@ function make_conditional_expression(pred, cons, alt) {
     return list("conditional_expression", pred, cons, alt);
 }
 // helper to make a literal value
-function make_literal(value) {
-    return list("literal", value);
-}
+
 
 
 
@@ -620,6 +618,8 @@ const primitive_functions = list(
        list("tail",    tail             ),
        list("pair",    pair             ),
        list("list",    list             ),
+       //Added this line for qn3
+       list("parse", parse              ),
        list("is_null", is_null          ),
        list("display", display          ),
        list("error",   error            ),
@@ -768,5 +768,7 @@ function factorial(n) {
 factorial(5) + n;`);
 */
 
-
+parse_and_evaluate("3 % 4;");
+parse_and_evaluate("true && false;");
+parse_and_evaluate(`parse(`parse("1;");`);`);
 
