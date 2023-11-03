@@ -9,10 +9,26 @@
 ////////////////////////////////////////////////////////////
 // Question 3A
 ////////////////////////////////////////////////////////////
-
+function apply_binary(lhs, op, rhs) {
+    return op === "+" 
+           ? lhs + rhs
+           : op === "-"
+           ? lhs - rhs
+           : op === "*"
+           ? lhs * rhs
+           : op === "/"
+           ? lhs / rhs
+           : 0;
+}
 function evaluate_BAE_tree(bae_tree) {
-
-    // WRITE HERE.
+    if (is_number(bae_tree)) {
+        return bae_tree;
+    } else {
+        const lhs = evaluate_BAE_tree(head(bae_tree));
+        const op = (head(tail(bae_tree)));
+        const rhs = evaluate_BAE_tree(head(tail(tail(bae_tree))));
+        return apply_binary(lhs, op, rhs);
+    }
 
 }
 
@@ -21,11 +37,28 @@ function evaluate_BAE_tree(bae_tree) {
 ////////////////////////////////////////////////////////////
 // Question 3B
 ////////////////////////////////////////////////////////////
-
+// "(", 2, "+", 5, ")" => list(2, "+", 5)
 function build_BAE_tree(bae_list) {
-
     // WRITE HERE.
+    let next_token = bae_list;
 
+    function build_tree() {
+        if (equal(head(next_token), "(")) {
+            next_token = tail(next_token);
+            const left_tree = build_tree();
+            const op = head(next_token);
+            next_token = tail(next_token);
+            const right_tree = build_tree();
+            next_token = tail(next_token); // skip over ")"
+            return list(left_tree, op, right_tree);
+        } else { // token is a number
+            const token = head(next_token);
+            next_token = tail(next_token);
+            return token;
+        }
+    }
+
+    return build_tree();
 }
 
 
@@ -35,8 +68,8 @@ function build_BAE_tree(bae_list) {
 ////////////////////////////////////////////////////////////
 
 function evaluate_BAE(bae_list) {
-
-    // WRITE HERE.
+    const updated = build_BAE_tree(bae_list);
+    return evaluate_BAE_tree(updated);
 
 }
 
@@ -47,8 +80,25 @@ function evaluate_BAE(bae_list) {
 ////////////////////////////////////////////////////////////
 
 function check_parentheses(paren_list) {
-
-    // WRITE HERE.
+    if (length(paren_list) === 0) {
+        return true;
+    } else {
+        let toggle = true;
+        let count_left = 0;
+        let count_right = 0;
+        for (let i = 0; i < length(paren_list); i = i + 1) {
+            if (list_ref(paren_list, i) === "(") {
+                count_left = count_left + 1;
+            } else {
+                count_right = count_right + 1;
+            }
+            if (count_right > count_left) {
+                toggle = false;
+            }
+        }
+        return toggle && count_right === count_left;
+        
+    }
 
 }
 
