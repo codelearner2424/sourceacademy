@@ -11,8 +11,24 @@
 ////////////////////////////////////////////////////////////
 
 function all_different(nums) {
-
-    // WRITE HERE.
+    if (is_null(nums)) {
+        return null;
+    } else if (length(nums) === 1) {
+        return true;
+    } else {
+        let switch1 = true;
+        let lst = nums;
+        const len = length(nums);
+        for (let i = 0; i < len; i = i + 1) {
+            const common = filter(x => x === list_ref(lst, i), lst);
+            if (length(common) !== 1) {
+                switch1 = false;
+            }
+            
+        }
+        return switch1;
+    }
+    
 
 }
 
@@ -24,7 +40,10 @@ function all_different(nums) {
 
 function is_valid_toto_set(nums, n, min, max) {
 
-    // WRITE HERE.
+    const len = length(nums);
+    const minimum = accumulate((x, acc) => x < acc ? x : acc, Infinity, nums);
+    const maximum = accumulate((x, acc) => x > acc ? x : acc, -Infinity, nums);
+    return len === n && min >= minimum && maximum <= max && all_different(nums);
 
 }
 
@@ -36,7 +55,15 @@ function is_valid_toto_set(nums, n, min, max) {
 
 function num_of_matches(numsA, numsB) {
 
-    // WRITE HERE.
+    let count = 0;
+    const len_A = length(numsA);
+    for (let i = 0; i < len_A; i = i + 1) {
+        const filtered_list = filter(x => x === list_ref(numsA, i), numsB);
+        if (length(filtered_list) === 1) {
+            count = count + 1;
+        }
+    }
+    return count;
 
 }
 
@@ -47,11 +74,31 @@ function num_of_matches(numsA, numsB) {
 ////////////////////////////////////////////////////////////
 
 function check_winning_group(bet_nums, draw_nums, extra_num) {
-
-    // WRITE HERE.
+    function check_extra(nums) {
+        const filtered = filter(x => x === extra_num, nums);
+        return length(filtered) === 1;
+    }
+    const num_matches = num_of_matches(bet_nums, draw_nums);
+    const n = length(draw_nums);
+    if (n === num_matches) {
+        return 1;
+    } else if (num_matches === n - 1 && check_extra(bet_nums)) {
+        return 2;
+    } else if (num_matches === n - 1) {
+        return 3;
+    } else if (num_matches === n - 2 && check_extra(bet_nums)) {
+        return 4;
+    } else if (num_matches === n - 2) {
+        return 5;
+    } else {
+        return 0;
+    }
 
 }
-
+const bet_nums = list(40, 30, 1, 49, 27, 15);
+const draw_nums = list(23, 1, 30, 15, 40, 49);
+const extra_num = 27;
+display(check_winning_group(bet_nums, draw_nums, extra_num)); // returns 2
 
 
 ////////////////////////////////////////////////////////////
