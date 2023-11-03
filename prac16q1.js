@@ -12,7 +12,12 @@
 
 function is_nucleobase(s) {
 
-    // WRITE HERE.
+    // WRITE HERE
+    if (s === "G" || s === "A" || s === "C" || s === "T") {
+        return true;
+    } else {
+        return false;
+    }
 
 }
 
@@ -24,7 +29,13 @@ function is_nucleobase(s) {
 
 function is_dna_strand(xs) {
 
-    // WRITE HERE.
+    let list_of_trues = map(x => is_nucleobase(x), xs);
+    let switch1 = true;
+    while (!is_null(list_of_trues)) {
+        switch1 = switch1 && head(list_of_trues);
+        list_of_trues = tail(list_of_trues);
+    }
+    return switch1;
 
 }
 
@@ -36,7 +47,7 @@ function is_dna_strand(xs) {
 
 function combine(xss) {
 
-    // WRITE HERE.
+    return accumulate(append, null, xss);
 
 }
 
@@ -48,7 +59,7 @@ function combine(xss) {
 
 function oxoguanine_repair(xs) {
 
-    // WRITE HERE.
+    return map(x => x === "8" ? "G" : x, xs);
 
 }
 
@@ -59,23 +70,70 @@ function oxoguanine_repair(xs) {
 ////////////////////////////////////////////////////////////
 
 function find_gene_start(xs) {
-
-    // WRITE HERE.
-
+    if (is_null(xs)) {
+        return null;
+    }
+    function is_atg(first, second, third) {
+        return first === "A" && second === "T" && third === "G";
+    }
+    let lst = xs;
+    let switch1 = false;
+    while (!is_null(tail(tail(lst)))) {
+        const first = head(lst);
+        const second = head(tail(lst));
+        const third = head(tail(tail(lst)));
+        if (is_atg(first, second, third)) {
+            switch1 = true;
+            break;
+        }
+        lst = tail(lst);
+        
+    }
+    if (switch1 === false) {
+        return null;
+    } else {
+      if (is_null(tail(tail(tail(lst))))) {
+          return list(null);
+      } else {
+          return list(tail(tail(tail(lst))));
+      }
+    }
+     
+    
 }
-
-
 
 ////////////////////////////////////////////////////////////
 // Question 1F
 ////////////////////////////////////////////////////////////
 
 function find_gene_end(xs) {
-
-    // WRITE HERE.
+    let switch1 = false;
+    if (is_null(xs)) {
+        return null;
+    }
+    let output = null;
+    
+    function is_end(first, second, third) {
+        return (first === "T" && second === "A" && third === "G")
+            || (first === "T" && second === "A" && third === "A")
+            || (first === "T" && second === "G" && third === "A");
+    }
+    let lst = xs;
+    while (!is_null(tail(tail(lst)))) {
+        const first = head(lst);
+        const second = head(tail(lst));
+        const third = head(tail(tail(lst)));      
+        const bool = is_end(first, second, third);
+        if (bool) {
+            return list(reverse(output));
+        } else {
+            output = pair(first, output);
+        }
+        lst = tail(lst);
+    }
+    return null;
 
 }
-
 
 
 ////////////////////////////////////////////////////////////
@@ -83,11 +141,22 @@ function find_gene_end(xs) {
 ////////////////////////////////////////////////////////////
 
 function all_genes(xs) {
-
     // WRITE HERE.
-
+    const start = find_gene_start(xs);
+    if (is_null(start)) {
+        return null;
+    } else {
+        const end = find_gene_end(head(start));
+        if (is_null(end)) {
+            return null;
+        } else {
+            return pair(head(end), all_genes(head(start)));
+        }
+    }
 }
 
+display_list(all_genes(list("T", "A", "T", "G", "C", "A", "T", "A", "A", "G", "T", "A", "G", "A",
+"T", "G", "A", "T", "G", "A", "T")));
 
 
 ////////////////////////////////////////////////////////////
